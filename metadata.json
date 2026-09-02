@@ -1,0 +1,6 @@
+{
+  "name": "Portofolio Siswa SMK",
+  "description": "Website portofolio pribadi modern dan profesional untuk siswa SMK melamar PKL/Magang dan kerja.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
