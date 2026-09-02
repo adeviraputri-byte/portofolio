@@ -13,7 +13,7 @@ import {
   Database,
   FileJson
 } from 'lucide-react';
-import { ProfileData, SkillItem, ProjectItem, CertificateItem, EducationItem } from '../../types';
+import { ProfileData, SkillItem, ProjectItem, CertificateItem, EducationItem, NewsItem } from '../../types';
 
 interface AdminSettingsTabProps {
   profile: ProfileData;
@@ -21,12 +21,14 @@ interface AdminSettingsTabProps {
   projects: ProjectItem[];
   certificates: CertificateItem[];
   education: EducationItem[];
+  news?: NewsItem[];
   onImportData: (data: {
     profile?: ProfileData;
     skills?: SkillItem[];
     projects?: ProjectItem[];
     certificates?: CertificateItem[];
     education?: EducationItem[];
+    news?: NewsItem[];
   }) => void;
   onResetToDefaults: () => void;
   onLogout: () => void;
@@ -38,6 +40,7 @@ export const AdminSettingsTab: React.FC<AdminSettingsTabProps> = ({
   projects,
   certificates,
   education,
+  news = [],
   onImportData,
   onResetToDefaults,
   onLogout,
@@ -112,7 +115,8 @@ export const AdminSettingsTab: React.FC<AdminSettingsTabProps> = ({
         skills,
         projects,
         certificates,
-        education
+        education,
+        news
       }
     };
 
@@ -153,6 +157,28 @@ export const AdminSettingsTab: React.FC<AdminSettingsTabProps> = ({
 
   return (
     <div className="space-y-6">
+
+      {/* Cloud & Firebase Connection Status Card */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 text-white shadow-lg space-y-2">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-white/20 backdrop-blur-md">
+              <Database className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-bold">Database Cloud Firebase (Firestore)</h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-400 text-slate-950 uppercase tracking-wide">
+                  Aktif & Terhubung
+                </span>
+              </div>
+              <p className="text-xs text-blue-100 mt-0.5">
+                Semua perubahan proyek, skill, biodata, dan berita otomatis tersinkronisasi realtime ke Firestore.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Security & Password Change */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">

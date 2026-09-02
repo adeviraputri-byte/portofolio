@@ -8,6 +8,8 @@ import { Projects } from './components/Projects';
 import { ProjectModal } from './components/ProjectModal';
 import { Certificates } from './components/Certificates';
 import { CertificateModal } from './components/CertificateModal';
+import { News } from './components/News';
+import { NewsModal } from './components/NewsModal';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { CvModal } from './components/CvModal';
@@ -20,9 +22,28 @@ import {
   defaultProjects,
   defaultCertificates,
   defaultEducation,
+  defaultNews,
 } from './data/defaultData';
 
-import { ProfileData, SkillItem, ProjectItem, CertificateItem, EducationItem } from './types';
+import { 
+  ProfileData, 
+  SkillItem, 
+  ProjectItem, 
+  CertificateItem, 
+  EducationItem, 
+  NewsItem 
+} from './types';
+
+import {
+  loadInitialDataFromFirebase,
+  saveProfileData,
+  saveSkillsData,
+  saveProjectsData,
+  saveCertificatesData,
+  saveEducationData,
+  saveNewsData,
+  subscribeToFirebaseUpdates
+} from './lib/dbService';
 
 export default function App() {
   // 1. Dark Mode State with LocalStorage
@@ -42,15 +63,11 @@ export default function App() {
     }
   }, [darkMode]);
 
-  // 2. Profile & Content Data State with LocalStorage Persistence
+  // 2. State for all portfolio data
   const [profile, setProfile] = useState<ProfileData>(() => {
     const saved = localStorage.getItem('smk_profile_data');
     if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return defaultProfile;
-      }
+      try { return JSON.parse(saved); } catch (e) {}
     }
     return defaultProfile;
   });
@@ -58,11 +75,7 @@ export default function App() {
   const [skills, setSkills] = useState<SkillItem[]>(() => {
     const saved = localStorage.getItem('smk_skills_data');
     if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return defaultSkills;
-      }
+      try { return JSON.parse(saved); } catch (e) {}
     }
     return defaultSkills;
   });
@@ -70,11 +83,7 @@ export default function App() {
   const [projects, setProjects] = useState<ProjectItem[]>(() => {
     const saved = localStorage.getItem('smk_projects_data');
     if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return defaultProjects;
-      }
+      try { return JSON.parse(saved); } catch (e) {}
     }
     return defaultProjects;
   });
@@ -82,11 +91,7 @@ export default function App() {
   const [certificates, setCertificates] = useState<CertificateItem[]>(() => {
     const saved = localStorage.getItem('smk_certificates_data');
     if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return defaultCertificates;
-      }
+      try { return JSON.parse(saved); } catch (e) {}
     }
     return defaultCertificates;
   });
@@ -94,48 +99,83 @@ export default function App() {
   const [education, setEducation] = useState<EducationItem[]>(() => {
     const saved = localStorage.getItem('smk_education_data');
     if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return defaultEducation;
-      }
+      try { return JSON.parse(saved); } catch (e) {}
     }
     return defaultEducation;
   });
 
-  // 3. Modal States
+  const [news, setNews] = useState<NewsItem[]>(() => {
+    const saved = localStorage.getItem('smk_news_data');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    return defaultNews;
+  });
+
+  // 3. Load from Firebase on Mount and listen for updates
+  useEffect(() => {
+    loadInitialDataFromFirebase().then((res) => {
+      setProfile(res.profile);
+      setSkills(res.skills);
+      setProjects(res.projects);
+      setCertificates(res.certificates);
+      setEducation(res.education);
+      setNews(res.news);
+    });
+
+    const unsubscribe = subscribeToFirebaseUpdates({
+      onProfileUpdate: (p) => setProfile(p),
+      onSkillsUpdate: (s) => setSkills(s),
+      onProjectsUpdate: (pr) => setProjects(pr),
+      onCertificatesUpdate: (c) => setCertificates(c),
+      onEducationUpdate: (e) => setEducation(e),
+      onNewsUpdate: (n) => setNews(n)
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
+
+  // 4. Modal States
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const [selectedCertificate, setSelectedCertificate] = useState<CertificateItem | null>(null);
+  const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [isCvOpen, setIsCvOpen] = useState<boolean>(false);
 
   // Admin & Auth States
   const [isAdminAuthOpen, setIsAdminAuthOpen] = useState<boolean>(false);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState<boolean>(false);
 
-  // Handlers for Save Operations
+  // Handlers for Save Operations (Persisting to Firebase & LocalStorage)
   const handleSaveProfile = (updated: ProfileData) => {
     setProfile(updated);
-    localStorage.setItem('smk_profile_data', JSON.stringify(updated));
+    saveProfileData(updated);
   };
 
   const handleSaveSkills = (updated: SkillItem[]) => {
     setSkills(updated);
-    localStorage.setItem('smk_skills_data', JSON.stringify(updated));
+    saveSkillsData(updated);
   };
 
   const handleSaveProjects = (updated: ProjectItem[]) => {
     setProjects(updated);
-    localStorage.setItem('smk_projects_data', JSON.stringify(updated));
+    saveProjectsData(updated);
   };
 
   const handleSaveCertificates = (updated: CertificateItem[]) => {
     setCertificates(updated);
-    localStorage.setItem('smk_certificates_data', JSON.stringify(updated));
+    saveCertificatesData(updated);
   };
 
   const handleSaveEducation = (updated: EducationItem[]) => {
     setEducation(updated);
-    localStorage.setItem('smk_education_data', JSON.stringify(updated));
+    saveEducationData(updated);
+  };
+
+  const handleSaveNews = (updated: NewsItem[]) => {
+    setNews(updated);
+    saveNewsData(updated);
   };
 
   const handleImportAllData = (data: {
@@ -144,26 +184,23 @@ export default function App() {
     projects?: ProjectItem[];
     certificates?: CertificateItem[];
     education?: EducationItem[];
+    news?: NewsItem[];
   }) => {
     if (data.profile) handleSaveProfile(data.profile);
     if (data.skills) handleSaveSkills(data.skills);
     if (data.projects) handleSaveProjects(data.projects);
     if (data.certificates) handleSaveCertificates(data.certificates);
     if (data.education) handleSaveEducation(data.education);
+    if (data.news) handleSaveNews(data.news);
   };
 
   const handleResetToDefaults = () => {
-    setProfile(defaultProfile);
-    setSkills(defaultSkills);
-    setProjects(defaultProjects);
-    setCertificates(defaultCertificates);
-    setEducation(defaultEducation);
-
-    localStorage.removeItem('smk_profile_data');
-    localStorage.removeItem('smk_skills_data');
-    localStorage.removeItem('smk_projects_data');
-    localStorage.removeItem('smk_certificates_data');
-    localStorage.removeItem('smk_education_data');
+    handleSaveProfile(defaultProfile);
+    handleSaveSkills(defaultSkills);
+    handleSaveProjects(defaultProjects);
+    handleSaveCertificates(defaultCertificates);
+    handleSaveEducation(defaultEducation);
+    handleSaveNews(defaultNews);
   };
 
   // Check if admin is already authenticated
@@ -229,7 +266,13 @@ export default function App() {
           onSelectCertificate={(c) => setSelectedCertificate(c)}
         />
 
-        {/* 7. Kontak & Hubungi via WhatsApp */}
+        {/* 7. Berita, Artikel & Catatan Kegiatan SMK */}
+        <News 
+          news={news} 
+          onSelectNews={(n) => setSelectedNews(n)} 
+        />
+
+        {/* 8. Kontak & Hubungi via WhatsApp */}
         <Contact profile={profile} />
       </main>
 
@@ -257,7 +300,17 @@ export default function App() {
         />
       )}
 
-      {/* 3. Printable CV Modal */}
+      {/* 3. News Article Detail Reader Modal */}
+      {selectedNews && (
+        <NewsModal
+          news={selectedNews}
+          allNews={news}
+          onClose={() => setSelectedNews(null)}
+          onSelectRelated={(n) => setSelectedNews(n)}
+        />
+      )}
+
+      {/* 4. Printable CV Modal */}
       {isCvOpen && (
         <CvModal
           profile={profile}
@@ -269,14 +322,14 @@ export default function App() {
         />
       )}
 
-      {/* 4. Admin Authentication Login Modal */}
+      {/* 5. Admin Authentication Login Modal */}
       <AdminAuthModal
         isOpen={isAdminAuthOpen}
         onSuccessLogin={handleSuccessLogin}
         onClose={() => setIsAdminAuthOpen(false)}
       />
 
-      {/* 5. Full Admin Panel with CRUD and Security Settings */}
+      {/* 6. Full Admin Panel with CRUD and Security Settings */}
       <AdminPanel
         isOpen={isAdminPanelOpen}
         onClose={() => setIsAdminPanelOpen(false)}
@@ -285,11 +338,13 @@ export default function App() {
         projects={projects}
         certificates={certificates}
         education={education}
+        news={news}
         onSaveProfile={handleSaveProfile}
         onSaveSkills={handleSaveSkills}
         onSaveProjects={handleSaveProjects}
         onSaveCertificates={handleSaveCertificates}
         onSaveEducation={handleSaveEducation}
+        onSaveNews={handleSaveNews}
         onImportAllData={handleImportAllData}
         onResetToDefaults={handleResetToDefaults}
         onLogout={handleLogout}

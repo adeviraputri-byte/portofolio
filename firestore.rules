@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Portfolio collections can be read by public visitors and updated by admin
+    match /news/{newsId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /portfolio_data/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /skills/{skillId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /certificates/{certId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /education/{eduId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}

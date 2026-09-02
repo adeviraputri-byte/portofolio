@@ -46,6 +46,24 @@ export interface EducationItem {
   activities: string[];
 }
 
+export interface NewsItem {
+  id: string;
+  title: string;
+  slug?: string;
+  category: 'Kegiatan SMK' | 'Prestasi & Lomba' | 'Teknologi & Tutorial' | 'Pengalaman PKL' | 'Pengumuman';
+  summary: string;
+  content: string;
+  coverImage: string;
+  date: string;
+  readTime: string;
+  author: string;
+  authorRole: string;
+  authorAvatar?: string;
+  tags: string[];
+  views?: number;
+  featured?: boolean;
+}
+
 export interface ProfileData {
   fullName: string;
   nickname: string;

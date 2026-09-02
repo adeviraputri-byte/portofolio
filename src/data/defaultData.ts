@@ -1,4 +1,4 @@
-import { ProfileData, SkillItem, ProjectItem, CertificateItem, EducationItem } from '../types';
+import { ProfileData, SkillItem, ProjectItem, CertificateItem, EducationItem, NewsItem } from '../types';
 
 export const defaultProfile: ProfileData = {
   fullName: 'Ade Vira Putri',
@@ -336,3 +336,113 @@ export const defaultEducation: EducationItem[] = [
     activities: ['Anggota OSIS Bidang Teknologi Informasi', 'Peserta Olimpiade Sains Komputer Tingkat Sekolah']
   }
 ];
+
+export const defaultNews: NewsItem[] = [
+  {
+    id: 'n1',
+    title: 'Pengalaman Berharga Kunjungan Industri ke Software House & Tech Startup',
+    slug: 'kunjungan-industri-software-house-tech-startup',
+    category: 'Kegiatan SMK',
+    summary: 'Melihat langsung kultur kerja para engineer, alur development agile/scrum, dan teknologi modern yang diterapkan di industri digital nyata.',
+    content: `Sebagai siswa jurusan Rekayasa Perangkat Lunak (RPL), kunjungan industri merupakan salah satu momen paling membuka wawasan. Bersama teman-teman satu angkatan dan guru pembimbing, kami berkesempatan mengunjungi salah satu software house terkemuka di kawasan perkantoran Jakarta Selatan.
+
+Dalam sesi sharing bersama Tech Lead dan Senior Frontend Developer, kami belajar bagaimana sebuah proyek aplikasi skala besar dikembangkan secara kolaboratif menggunakan Git Flow, CI/CD pipeline, dan standarisasi Clean Code. 
+
+Poin-poin penting yang saya pelajari dari kunjungan ini:
+• Kolaborasi & komunikasi tim ternyata sama krusialnya dengan kemampuan coding teknis.
+• Penggunaan automated testing sangat ditekankan untuk memastikan reliabilitas aplikasi sebelum rilis ke production.
+• Pentingnya membangun portofolio proyek riil sejak masih duduk di bangku SMK.
+
+Pengalaman ini semakin memotivasi saya untuk terus mengasah kemampuan React.js dan Tailwind CSS agar siap terjun ke dunia kerja maupun program magang industri.`,
+    coverImage: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1000&auto=format&fit=crop',
+    date: '15 Mei 2026',
+    readTime: '4 menit baca',
+    author: 'Ade Vira Putri',
+    authorRole: 'Siswa XII RPL',
+    authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop',
+    tags: ['Kegiatan SMK', 'Kunjungan Industri', 'Karier Developer', 'RPL'],
+    views: 342,
+    featured: true
+  },
+  {
+    id: 'n2',
+    title: 'Meraih Juara 2 LKS Bidang Web Technologies Tingkat Kota 2025: Persiapan & Pelajaran',
+    slug: 'juara-2-lks-web-technologies-tingkat-kota-2025',
+    category: 'Prestasi & Lomba',
+    summary: 'Catatan perjalanan intensif selama 3 bulan latihan coding cepat (speed coding), manajemen waktu, dan problem solving hingga meraih podium penghargaan.',
+    content: `Lomba Kompetensi Siswa (LKS) adalah ajang bergengsi tahunan bagi siswa SMK untuk menguji kompetensi keahlian di tingkat daerah hingga nasional. Tahun ini, saya berkesempatan mewakili sekolah pada mata lomba Web Technologies.
+
+Kompetisi berlangsung selama 2 hari dengan modul yang sangat menantang:
+1. Modul 1: Responsive Web Design & Client-side Scripting (HTML, CSS Grid, JavaScript).
+2. Modul 2: RESTful API Development & Database Management (PHP Laravel & MySQL).
+3. Modul 3: Speed Coding & Integration Test.
+
+Tantangan terbesar adalah keterbatasan waktu dan larangan menggunakan koneksi internet selama pengerjaan. Semua dokumentasi harus dipahami dengan matang di luar kepala.
+
+Berkat bimbingan intensif dari guru produktif dan latihan rutin setiap hari setelah jam sekolah, saya berhasil meraih Juara 2. Hasil ini menjadi bukti bahwa konsistensi dan dedikasi dalam belajar pemrograman akan selalu membuahkan hasil.`,
+    coverImage: 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?q=80&w=1000&auto=format&fit=crop',
+    date: '28 April 2026',
+    readTime: '5 menit baca',
+    author: 'Ade Vira Putri',
+    authorRole: 'Siswa XII RPL',
+    authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop',
+    tags: ['LKS SMK', 'Prestasi', 'Web Technologies', 'Kompetisi'],
+    views: 518,
+    featured: true
+  },
+  {
+    id: 'n3',
+    title: 'Tips Mempersiapkan Portofolio & CV untuk Siswa SMK yang Ingin Masuk Dunia PKL / Magang',
+    slug: 'tips-portofolio-cv-siswa-smk-pkl-magang',
+    category: 'Pengalaman PKL',
+    summary: 'Langkah praktis menata portofolio proyek, memilih repositori GitHub terbaik, dan menyusun CV ATS yang menarik perhatian recruiter perusahaan.',
+    content: `Menjelang semester Praktik Kerja Lapangan (PKL), banyak teman-teman siswa SMK yang bingung bagaimana cara memperkenalkan diri ke perusahaan teknologi. Berikut adalah beberapa tips yang saya terapkan dan terbukti efektif:
+
+1. Buat Portofolio Web Interaktif
+Jangan hanya mengandalkan file PDF. Website portofolio online yang responsif membuktikan langsung bahwa kamu bisa mengimplementasikan kode yang hidup.
+
+2. Dokumentasikan Repositori GitHub dengan Rapi
+Pastikan setiap repositori memiliki README.md yang jelas: screenshoot aplikasi, cara menjalankan di local server, dan fitur-fitur utama yang dibangun.
+
+3. Sorot Proyek Berorientasi Masalah Riil
+Perusahaan sangat menyukai kandidat yang mampu menyelesaikan masalah nyata (misal: sistem kasir toko UMKM, aplikasi presensi sekolah, dsb).
+
+4. Jangan Takut Menampilkan Soft Skills
+Kemampuan komunikasi, kemauan belajar (fast learner), dan kedisiplinan sering kali menjadi poin penentu bagi siswa magang.`,
+    coverImage: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000&auto=format&fit=crop',
+    date: '10 Maret 2026',
+    readTime: '3 menit baca',
+    author: 'Ade Vira Putri',
+    authorRole: 'Siswa XII RPL',
+    authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop',
+    tags: ['Tips PKL', 'Portofolio', 'Magang', 'Karier SMK'],
+    views: 620,
+    featured: false
+  },
+  {
+    id: 'n4',
+    title: 'Tutorial Ringkas: Mengapa Tailwind CSS Sangat Cocok untuk Mempercepat Pembuatan UI Web',
+    slug: 'tutorial-tailwind-css-mempercepat-pembuatan-ui-web',
+    category: 'Teknologi & Tutorial',
+    summary: 'Ulasan mengapa pendekatan utility-first CSS mengubah cara kita membangun antarmuka web modern dengan kecepatan dan konsistensi tinggi.',
+    content: `Bagi rekan-rekan siswa SMK yang terbiasa menulis ratusan baris file style.css manual, beralih ke Tailwind CSS mungkin terasa asing di awal. Namun begitu memahami pola kerjanya, proses styling menjadi berkali-kali lipat lebih cepat.
+
+Keunggulan utama yang saya rasakan saat membangun berbagai proyek sekolah:
+• Tidak perlu pusing memikirkan nama class CSS sembarangan (seperti .box-inner-wrapper-custom).
+• Desain responsif langsung di HTML menggunakan prefix sm:, md:, lg:.
+• Sistem warna dan spacing yang sudah terstandarisasi dengan harmoni visual yang tinggi.
+• Dukungan Dark Mode yang sangat mudah hanya dengan prefix dark:.
+
+Bagi teman-teman yang ingin memulai, cobalah bangun satu komponen kartu sederhana atau navbar responsif terlebih dahulu sebelum beralih ke seluruh layout halaman.`,
+    coverImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000&auto=format&fit=crop',
+    date: '20 Februari 2026',
+    readTime: '4 menit baca',
+    author: 'Ade Vira Putri',
+    authorRole: 'Siswa XII RPL',
+    authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop',
+    tags: ['Tailwind CSS', 'Tutorial Frontend', 'CSS', 'Tips Coding'],
+    views: 410,
+    featured: false
+  }
+];
+

@@ -11,14 +11,16 @@ import {
   LogOut, 
   ExternalLink,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Newspaper
 } from 'lucide-react';
-import { ProfileData, SkillItem, ProjectItem, CertificateItem, EducationItem } from '../../types';
+import { ProfileData, SkillItem, ProjectItem, CertificateItem, EducationItem, NewsItem } from '../../types';
 import { AdminProfileTab } from './AdminProfileTab';
 import { AdminProjectsTab } from './AdminProjectsTab';
 import { AdminSkillsTab } from './AdminSkillsTab';
 import { AdminCertificatesTab } from './AdminCertificatesTab';
 import { AdminEducationTab } from './AdminEducationTab';
+import { AdminNewsTab } from './AdminNewsTab';
 import { AdminSettingsTab } from './AdminSettingsTab';
 
 interface AdminPanelProps {
@@ -29,23 +31,26 @@ interface AdminPanelProps {
   projects: ProjectItem[];
   certificates: CertificateItem[];
   education: EducationItem[];
+  news: NewsItem[];
   onSaveProfile: (profile: ProfileData) => void;
   onSaveSkills: (skills: SkillItem[]) => void;
   onSaveProjects: (projects: ProjectItem[]) => void;
   onSaveCertificates: (certificates: CertificateItem[]) => void;
   onSaveEducation: (education: EducationItem[]) => void;
+  onSaveNews: (news: NewsItem[]) => void;
   onImportAllData: (data: {
     profile?: ProfileData;
     skills?: SkillItem[];
     projects?: ProjectItem[];
     certificates?: CertificateItem[];
     education?: EducationItem[];
+    news?: NewsItem[];
   }) => void;
   onResetToDefaults: () => void;
   onLogout: () => void;
 }
 
-type AdminTab = 'profile' | 'projects' | 'skills' | 'certificates' | 'education' | 'settings';
+type AdminTab = 'profile' | 'projects' | 'skills' | 'certificates' | 'education' | 'news' | 'settings';
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({
   isOpen,
@@ -55,11 +60,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   projects,
   certificates,
   education,
+  news,
   onSaveProfile,
   onSaveSkills,
   onSaveProjects,
   onSaveCertificates,
   onSaveEducation,
+  onSaveNews,
   onImportAllData,
   onResetToDefaults,
   onLogout,
@@ -74,6 +81,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     { id: 'skills', label: 'Skill & Keahlian', icon: Code2, count: skills.length },
     { id: 'certificates', label: 'Sertifikat', icon: Award, count: certificates.length },
     { id: 'education', label: 'Pendidikan', icon: GraduationCap, count: education.length },
+    { id: 'news', label: 'Berita & Artikel', icon: Newspaper, count: news.length },
     { id: 'settings', label: 'Pengaturan & Akun', icon: Settings, count: null },
   ];
 
@@ -195,6 +203,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <AdminEducationTab education={education} onSaveEducation={onSaveEducation} />
             )}
 
+            {activeTab === 'news' && (
+              <AdminNewsTab news={news} onSaveNews={onSaveNews} />
+            )}
+
             {activeTab === 'settings' && (
               <AdminSettingsTab 
                 profile={profile}
@@ -202,6 +214,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 projects={projects}
                 certificates={certificates}
                 education={education}
+                news={news}
                 onImportData={onImportAllData}
                 onResetToDefaults={onResetToDefaults}
                 onLogout={onLogout}
