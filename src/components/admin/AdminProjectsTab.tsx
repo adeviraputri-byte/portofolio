@@ -15,6 +15,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { ProjectItem } from '../../types';
+import { ImageUploader } from '../common/ImageUploader';
 
 interface AdminProjectsTabProps {
   projects: ProjectItem[];
@@ -31,6 +32,8 @@ export const AdminProjectsTab: React.FC<AdminProjectsTabProps> = ({
   
   // Editor Modal State
   const [editingProject, setEditingProject] = useState<ProjectItem | null>(null);
+  const [tagsInput, setTagsInput] = useState<string>('');
+  const [featuresInput, setFeaturesInput] = useState<string>('');
   const [isNew, setIsNew] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
@@ -66,11 +69,15 @@ export const AdminProjectsTab: React.FC<AdminProjectsTabProps> = ({
       challenges: 'Tantangan teknis yang diselesaikan...'
     };
     setEditingProject(newProj);
+    setTagsInput(newProj.tags.join(', '));
+    setFeaturesInput(newProj.features.join('\n'));
     setIsNew(true);
   };
 
   const handleOpenEdit = (project: ProjectItem) => {
     setEditingProject({ ...project });
+    setTagsInput(project.tags ? project.tags.join(', ') : '');
+    setFeaturesInput(project.features ? project.features.join('\n') : '');
     setIsNew(false);
   };
 
@@ -92,12 +99,28 @@ export const AdminProjectsTab: React.FC<AdminProjectsTabProps> = ({
     e.preventDefault();
     if (!editingProject) return;
 
+    const parsedTags = tagsInput
+      .split(',')
+      .map((t) => t.trim())
+      .filter(Boolean);
+
+    const parsedFeatures = featuresInput
+      .split('\n')
+      .map((l) => l.trim())
+      .filter(Boolean);
+
+    const projectToSave: ProjectItem = {
+      ...editingProject,
+      tags: parsedTags.length > 0 ? parsedTags : ['Project'],
+      features: parsedFeatures
+    };
+
     let updated: ProjectItem[];
     if (isNew) {
-      updated = [editingProject, ...items];
+      updated = [projectToSave, ...items];
       showToast('Proyek baru berhasil ditambahkan!');
     } else {
-      updated = items.map((p) => p.id === editingProject.id ? editingProject : p);
+      updated = items.map((p) => p.id === projectToSave.id ? projectToSave : p);
       showToast('Perubahan proyek berhasil disimpan!');
     }
 
@@ -361,35 +384,38 @@ export const AdminProjectsTab: React.FC<AdminProjectsTabProps> = ({
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    URL Gambar / Banner Thumbnail
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={editingProject.image}
-                    onChange={(e) => setEditingProject({ ...editingProject, image: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500"
-                  />
-                </div>
+              {/* Gambar / Banner Proyek Image Uploader */}
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                <ImageUploader
+                  id="admin-project-image"
+                  label="Gambar / Screenshot Thumbnail Proyek *"
+                  value={editingProject.image}
+                  onChange={(url) => setEditingProject({ ...editingProject, image: url })}
+                  aspectRatio="video"
+                  placeholder="https://images.unsplash.com/photo-..."
+                  helperText="Bisa unggah screenshot proyek dari komputer atau tempel tautan URL gambar."
+                  presets={[
+                    { label: 'E-Commerce / Toko', url: 'https://images.unsplash.com/photo-1556742049-0a67e55722c3?auto=format&fit=crop&w=1000&q=80' },
+                    { label: 'Web Coding / Code', url: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1000&q=80' },
+                    { label: 'Dashboard Admin', url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000&q=80' },
+                    { label: 'Aplikasi Perpustakaan', url: 'https://images.unsplash.com/photo-1507842229450-7907e497a3ee?auto=format&fit=crop&w=1000&q=80' },
+                    { label: 'UI/UX Mobile App', url: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1000&q=80' }
+                  ]}
+                />
+              </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Teknologi / Tags (pisahkan dengan koma)
-                  </label>
-                  <input
-                    type="text"
-                    value={editingProject.tags.join(', ')}
-                    onChange={(e) => setEditingProject({
-                      ...editingProject,
-                      tags: e.target.value.split(',').map((t) => t.trim()).filter(Boolean)
-                    })}
-                    placeholder="React, TypeScript, Tailwind, MySQL"
-                    className="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500"
-                  />
-                </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Teknologi / Tags (pisahkan dengan koma) <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="admin-project-tags"
+                  value={tagsInput}
+                  onChange={(e) => setTagsInput(e.target.value)}
+                  placeholder="React, TypeScript, Tailwind, MySQL"
+                  className="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500"
+                />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -426,11 +452,9 @@ export const AdminProjectsTab: React.FC<AdminProjectsTabProps> = ({
                 </label>
                 <textarea
                   rows={3}
-                  value={editingProject.features.join('\n')}
-                  onChange={(e) => setEditingProject({
-                    ...editingProject,
-                    features: e.target.value.split('\n').filter((l) => l.trim() !== '')
-                  })}
+                  id="admin-project-features"
+                  value={featuresInput}
+                  onChange={(e) => setFeaturesInput(e.target.value)}
                   placeholder="Katalog menu makanan&#10;Keranjang belanja realtime&#10;Dashboard admin kasir"
                   className="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500"
                 />

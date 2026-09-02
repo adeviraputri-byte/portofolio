@@ -23,6 +23,7 @@ export const AdminEducationTab: React.FC<AdminEducationTabProps> = ({
 }) => {
   const [items, setItems] = useState<EducationItem[]>(education);
   const [editingItem, setEditingItem] = useState<EducationItem | null>(null);
+  const [activitiesInput, setActivitiesInput] = useState<string>('');
   const [isNew, setIsNew] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
@@ -44,11 +45,13 @@ export const AdminEducationTab: React.FC<AdminEducationTabProps> = ({
       activities: ['Ketua Ekstrakurikuler IT Club', 'Peserta LKS Web Tech']
     };
     setEditingItem(newItem);
+    setActivitiesInput(newItem.activities?.join(', ') || '');
     setIsNew(true);
   };
 
   const handleOpenEdit = (item: EducationItem) => {
     setEditingItem({ ...item });
+    setActivitiesInput(item.activities?.join(', ') || '');
     setIsNew(false);
   };
 
@@ -64,12 +67,22 @@ export const AdminEducationTab: React.FC<AdminEducationTabProps> = ({
     e.preventDefault();
     if (!editingItem) return;
 
+    const parsedActivities = activitiesInput
+      .split(',')
+      .map((a) => a.trim())
+      .filter(Boolean);
+
+    const itemToSave: EducationItem = {
+      ...editingItem,
+      activities: parsedActivities
+    };
+
     let updated: EducationItem[];
     if (isNew) {
-      updated = [...items, editingItem];
+      updated = [...items, itemToSave];
       showToast('Riwayat pendidikan baru berhasil ditambahkan!');
     } else {
-      updated = items.map((e) => e.id === editingItem.id ? editingItem : e);
+      updated = items.map((e) => e.id === itemToSave.id ? itemToSave : e);
       showToast('Perubahan pendidikan berhasil disimpan!');
     }
 
@@ -309,11 +322,9 @@ export const AdminEducationTab: React.FC<AdminEducationTabProps> = ({
                 </label>
                 <input
                   type="text"
-                  value={editingItem.activities ? editingItem.activities.join(', ') : ''}
-                  onChange={(e) => setEditingItem({
-                    ...editingItem,
-                    activities: e.target.value.split(',').map((a) => a.trim()).filter(Boolean)
-                  })}
+                  id="admin-edu-activities"
+                  value={activitiesInput}
+                  onChange={(e) => setActivitiesInput(e.target.value)}
                   placeholder="Ketua IT Club, OSIS, Tim LKS"
                   className="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500"
                 />

@@ -13,6 +13,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { CertificateItem } from '../../types';
+import { ImageUploader } from '../common/ImageUploader';
 
 interface AdminCertificatesTabProps {
   certificates: CertificateItem[];
@@ -335,17 +336,22 @@ export const AdminCertificatesTab: React.FC<AdminCertificatesTabProps> = ({
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  URL Gambar / Foto Sertifikat
-                </label>
-                <input
-                  type="text"
-                  required
+              {/* Foto / Scan Sertifikat Image Uploader */}
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                <ImageUploader
+                  id="admin-certificate-image"
+                  label="Foto / Scan Dokumen Sertifikat *"
                   value={editingCert.image}
-                  onChange={(e) => setEditingCert({ ...editingCert, image: e.target.value })}
-                  placeholder="https://..."
-                  className="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500"
+                  onChange={(url) => setEditingCert({ ...editingCert, image: url })}
+                  aspectRatio="cert"
+                  placeholder="https://images.unsplash.com/photo-..."
+                  helperText="Unggah scan sertifikat/piagam (JPG/PNG) dari komputer atau masukkan link URL gambar."
+                  presets={[
+                    { label: 'Sertifikat Standar', url: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1000&q=80' },
+                    { label: 'Penghargaan / Medali', url: 'https://images.unsplash.com/photo-1569683795645-b62e50fbf103?auto=format&fit=crop&w=1000&q=80' },
+                    { label: 'Piagam LKS / Prestasi', url: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1000&q=80' },
+                    { label: 'Sertifikat IT Course', url: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1000&q=80' }
+                  ]}
                 />
               </div>
 

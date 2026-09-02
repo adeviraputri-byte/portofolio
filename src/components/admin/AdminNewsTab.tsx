@@ -16,6 +16,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { NewsItem } from '../../types';
+import { ImageUploader } from '../common/ImageUploader';
 
 interface AdminNewsTabProps {
   news: NewsItem[];
@@ -26,6 +27,7 @@ export const AdminNewsTab: React.FC<AdminNewsTabProps> = ({ news, onSaveNews }) 
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [editingItem, setEditingItem] = useState<NewsItem | null>(null);
+  const [tagsInput, setTagsInput] = useState<string>('');
   const [isNew, setIsNew] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -53,7 +55,14 @@ export const AdminNewsTab: React.FC<AdminNewsTabProps> = ({ news, onSaveNews }) 
       featured: false
     };
     setEditingItem(newItem);
+    setTagsInput(newItem.tags.join(', '));
     setIsNew(true);
+  };
+
+  const handleEditItem = (item: NewsItem) => {
+    setEditingItem({ ...item });
+    setTagsInput(item.tags ? item.tags.join(', ') : '');
+    setIsNew(false);
   };
 
   const handleSaveModal = (e: React.FormEvent) => {
@@ -65,12 +74,22 @@ export const AdminNewsTab: React.FC<AdminNewsTabProps> = ({ news, onSaveNews }) 
       return;
     }
 
+    const parsedTags = tagsInput
+      .split(',')
+      .map((t) => t.trim())
+      .filter(Boolean);
+
+    const itemToSave: NewsItem = {
+      ...editingItem,
+      tags: parsedTags.length > 0 ? parsedTags : ['SMK']
+    };
+
     let updatedNews: NewsItem[];
     if (isNew) {
-      updatedNews = [editingItem, ...news];
+      updatedNews = [itemToSave, ...news];
       showToast('Berita baru berhasil ditambahkan dan disinkronkan ke Firebase!');
     } else {
-      updatedNews = news.map((item) => (item.id === editingItem.id ? editingItem : item));
+      updatedNews = news.map((item) => (item.id === itemToSave.id ? itemToSave : item));
       showToast('Perubahan berita berhasil disimpan ke Firebase!');
     }
 
@@ -228,10 +247,7 @@ export const AdminNewsTab: React.FC<AdminNewsTabProps> = ({ news, onSaveNews }) 
               </button>
 
               <button
-                onClick={() => {
-                  setEditingItem(item);
-                  setIsNew(false);
-                }}
+                onClick={() => handleEditItem(item)}
                 className="p-2 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 transition"
                 title="Edit Berita"
               >
@@ -322,23 +338,24 @@ export const AdminNewsTab: React.FC<AdminNewsTabProps> = ({ news, onSaveNews }) 
                 </div>
               </div>
 
-              {/* Cover Image URL */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  URL Gambar Sampul (Cover Image)
-                </label>
-                <input
-                  type="url"
+              {/* Cover Image Uploader */}
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                <ImageUploader
+                  id="admin-news-cover-image"
+                  label="Gambar Sampul Artikel (Cover Image) *"
                   value={editingItem.coverImage}
-                  onChange={(e) => setEditingItem({ ...editingItem, coverImage: e.target.value })}
+                  onChange={(url) => setEditingItem({ ...editingItem, coverImage: url })}
+                  aspectRatio="video"
                   placeholder="https://images.unsplash.com/..."
-                  className="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+                  helperText="Bisa unggah foto kegiatan/dokumentasi langsung dari perangkat atau tempel tautan URL."
+                  presets={[
+                    { label: 'Kegiatan SMK / Tim', url: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1000&auto=format&fit=crop' },
+                    { label: 'Kompetisi LKS', url: 'https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=1000&auto=format&fit=crop' },
+                    { label: 'Coding / Tutorial', url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1000&auto=format&fit=crop' },
+                    { label: 'Pengalaman PKL / Kantor', url: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1000&auto=format&fit=crop' },
+                    { label: 'Pengumuman Resmi', url: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=1000&auto=format&fit=crop' }
+                  ]}
                 />
-                {editingItem.coverImage && (
-                  <div className="mt-2 h-28 w-full rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
-                    <img src={editingItem.coverImage} alt="Preview" className="w-full h-full object-cover" />
-                  </div>
-                )}
               </div>
 
               {/* Summary */}
@@ -418,11 +435,9 @@ export const AdminNewsTab: React.FC<AdminNewsTabProps> = ({ news, onSaveNews }) 
                   </label>
                   <input
                     type="text"
-                    value={editingItem.tags.join(', ')}
-                    onChange={(e) => setEditingItem({ 
-                      ...editingItem, 
-                      tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean)
-                    })}
+                    id="admin-news-tags"
+                    value={tagsInput}
+                    onChange={(e) => setTagsInput(e.target.value)}
                     placeholder="Contoh: Kegiatan SMK, Kunjungan Industri, RPL"
                     className="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                   />

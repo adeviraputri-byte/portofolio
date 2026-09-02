@@ -17,6 +17,7 @@ import {
   Info
 } from 'lucide-react';
 import { ProfileData } from '../../types';
+import { ImageUploader } from '../common/ImageUploader';
 
 interface AdminProfileTabProps {
   profile: ProfileData;
@@ -156,18 +157,25 @@ export const AdminProfileTab: React.FC<AdminProfileTabProps> = ({ profile, onSav
               className="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500"
             />
           </div>
+        </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-              URL Foto Profil
-            </label>
-            <input
-              type="text"
-              value={formData.avatarUrl}
-              onChange={(e) => handleChange('avatarUrl', e.target.value)}
-              className="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-blue-500"
-            />
-          </div>
+        {/* Foto Profil Image Uploader */}
+        <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+          <ImageUploader
+            id="admin-profile-avatar"
+            label="Foto Profil Siswa (Hero & Tentang Saya)"
+            value={formData.avatarUrl}
+            onChange={(url) => handleChange('avatarUrl', url)}
+            aspectRatio="avatar"
+            placeholder="https://images.unsplash.com/photo-..."
+            helperText="Unggah foto profil formal/semi-formal siswa SMK atau gunakan link gambar langsung."
+            presets={[
+              { label: 'Siswa Putri Hijab', url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop' },
+              { label: 'Siswa Dev', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop' },
+              { label: 'Avatar Coding', url: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=600&auto=format&fit=crop' },
+              { label: 'Minimalist Student', url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=600&auto=format&fit=crop' }
+            ]}
+          />
         </div>
 
         <div>
